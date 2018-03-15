@@ -1,4 +1,4 @@
-class Tendance_date_gen {
+class Tendance_gen {
   void generate(ArrayList<Mot> unfiltered_data) {
     ArrayList<Mot> data = new ArrayList<Mot>();
     float max_tendance = 0.;
@@ -31,14 +31,14 @@ class Tendance_date_gen {
         float scaled_tendance = mot.tendance * 30 / max_tendance;
         float ajusted_tendance = map(-mot.tendance, 0, 500, PI/2, PI);
         color col;
-        if (scaled_tendance < -0.1) {
+        if (scaled_tendance < 0) {
           col = color(330 - scaled_tendance, 80, 100 + (scaled_tendance/2)); // pink
         }
-        else if (scaled_tendance > 0.1) {
+        else if (scaled_tendance > 0) {
           col = color(210 + scaled_tendance, 80,100 - (scaled_tendance/2)); // blue
         } else {
-          col = color(0,0,40); // grey  
-        } 
+          col = color(0);
+        }
         noFill();
         stroke(col);
         PVector pos = polar_to_carthesian(ajusted_count, ajusted_tendance);

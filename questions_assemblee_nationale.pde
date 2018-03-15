@@ -30,8 +30,9 @@ void setup() {
   println("WORDCRAM : OK");  
   new Date_gen().generate(data);
   println("DATE : OK");  
-  new Tendance_date_gen().generate(data);
+  new Tendance_gen().generate(data);
   println("TENDANCE - DATE : OK");    
   new Text_gen().generate();
-  print("Done !");
+  new Gradient_gen().generate();
+  print("Done  - Compiled in " + str(millis()/1000) + " seconds.");
 }

@@ -37,6 +37,9 @@ class Date_gen {
         }
       }
     }
+    if (terrorisme_dates.size() == 0) {
+      return;
+    }
     draw_dates(terrorisme_dates, 2300);
   }
   
@@ -60,14 +63,16 @@ class Date_gen {
         }
       }
     }
-    
+    if (travail_dates.size() == 0) {
+      return;
+    }
     draw_dates(travail_dates, 3200);
   }
   
   void generate_cahuzac(ArrayList<Mot> unfiltered_data) {
     ArrayList<Date> cahuzac_dates = clone_array(base_dates);
     for (Mot mot : unfiltered_data) {
-      if ((mot.label.contains("rep")) && mot.parti.equals("ALL") && !mot.mois.equals("ALL")) {
+      if ((mot.label.contains("cahuzac")) && mot.parti.equals("ALL") && !mot.mois.equals("ALL")) {
         for (Date date : cahuzac_dates) {
           if (date.label.equals(mot.mois)) {
             date.count = date.count + mot.count;
@@ -76,7 +81,9 @@ class Date_gen {
         }
       }
     }
-    
+    if (cahuzac_dates.size() == 0) {
+      return;
+    }
     draw_dates(cahuzac_dates, 2800);
   }
   
@@ -115,14 +122,13 @@ class Date_gen {
       
       float scaled_tendance = date.tendance * 30 / 15;
       color col;
-      if (scaled_tendance < -0.1) {
-          col = color(330 - scaled_tendance, 80, 100 + (scaled_tendance/2)); // pink
-        }
-        else if (scaled_tendance > 0.1) {
-          col = color(210 + scaled_tendance, 80,100 - (scaled_tendance/2)); // blue
-        } else {
-          col = color(0,0,40); // grey  
-        } 
+      if (scaled_tendance < 0) {
+        col = color(330 - scaled_tendance, 80, 100 + (scaled_tendance/2)); // pink
+      } else if (scaled_tendance > 0) {
+        col = color(210 + scaled_tendance, 80,100 - (scaled_tendance/2)); // blue
+      } else {
+        col = color(0);
+      }
       
       stroke(col);
       fill(col);
