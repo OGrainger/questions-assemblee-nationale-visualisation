@@ -4,6 +4,8 @@ class Date_gen {
   void generate(ArrayList<Mot> unfiltered_data) {
     base_dates = generate_dates(unfiltered_data);
     generate_terrorisme(unfiltered_data);
+    generate_travail(unfiltered_data);
+    generate_cahuzac(unfiltered_data);
   }
   
   void generate_terrorisme(ArrayList<Mot> unfiltered_data) {
@@ -21,6 +23,8 @@ class Date_gen {
         date.event = "Magnanville";
       } else if (date.label.equals("2016-07")) {
         date.event = "Nice";
+      } else if (date.label.equals("2013-01")) {
+        date.event = "In Amenas";
       }
     }
     for (Mot mot : unfiltered_data) {
@@ -28,45 +32,109 @@ class Date_gen {
         for (Date date : terrorisme_dates) {
           if (date.label.equals(mot.mois)) {
             date.count = date.count + mot.count;
+            date.tendance = date.tendance + mot.tendance;
+          }
+        }
+      }
+    }
+    draw_dates(terrorisme_dates, 2300);
+  }
+  
+  void generate_travail(ArrayList<Mot> unfiltered_data) {
+    ArrayList<Date> travail_dates = clone_array(base_dates);
+    for (Date date : travail_dates) {
+      if (date.label.equals("2016-03")) {
+        date.event = "Manif. contre loi travail";
+      }
+      if (date.label.equals("2016-05")) {
+        date.event = "Grèves contre loi travail";
+      }
+    }
+    for (Mot mot : unfiltered_data) {
+      if (mot.label.contains("travail") && mot.parti.equals("ALL") && !mot.mois.equals("ALL")) {
+        for (Date date : travail_dates) {
+          if (date.label.equals(mot.mois)) {
+            date.count = date.count + mot.count;
+            date.tendance = date.tendance + mot.tendance;
           }
         }
       }
     }
     
+    draw_dates(travail_dates, 3200);
+  }
+  
+  void generate_cahuzac(ArrayList<Mot> unfiltered_data) {
+    ArrayList<Date> cahuzac_dates = clone_array(base_dates);
+    for (Mot mot : unfiltered_data) {
+      if ((mot.label.contains("rep")) && mot.parti.equals("ALL") && !mot.mois.equals("ALL")) {
+        for (Date date : cahuzac_dates) {
+          if (date.label.equals(mot.mois)) {
+            date.count = date.count + mot.count;
+            date.tendance = date.tendance + mot.tendance;
+          }
+        }
+      }
+    }
+    
+    draw_dates(cahuzac_dates, 2800);
+  }
+  
+   void draw_dates(ArrayList<Date> dates, int py) {
+    
     int px = 100;
-    int py = 2000;
     int max_count = 0;
-    textSize(32);
-    fill(0);
-    text("Occurence par mois des mots liés au terrorisme", 100, py - 100);
-    float ecart = (width - 2 * px) / terrorisme_dates.size();
+    //textSize(32);
+    //fill(0);
+    //text("Occurence par mois des mots liés au terrorisme", 100, py - 100);
+    float ecart = (width - 2 * px) / dates.size();
     stroke(0);
     noFill();
     beginShape();
-    curveVertex(px, py - terrorisme_dates.get(0).count);
-    for (Date date : terrorisme_dates) {
+    curveVertex(px, py - dates.get(0).count);
+    for (Date date : dates) {
       if (max_count < date.count) {
         max_count = date.count;
       }
-      curveVertex(px, py - 2 * date.count);
+    }
+    for (Date date : dates) {
+      curveVertex(px, py - map(date.count, 0, max_count, 0, 250));
       px += ecart;
     }
-    curveVertex(px, py - terrorisme_dates.get(terrorisme_dates.size() - 1).count);
+    curveVertex(px, py - dates.get(dates.size() - 1).count);
     endShape();
    
     px = 100;
-    for (Date date : terrorisme_dates) {
+    float max_tendance = 0.;
+    for (Date date : dates) {
+      if (date.tendance > max_tendance) {
+        max_tendance = date.tendance;
+      }
+    }
+    for (Date date : dates) {
+      
+      float scaled_tendance = date.tendance * 30 / 15;
+      color col;
+      if (scaled_tendance < -0.1) {
+          col = color(330 - scaled_tendance, 80, 100 + (scaled_tendance/2)); // pink
+        }
+        else if (scaled_tendance > 0.1) {
+          col = color(210 + scaled_tendance, 80,100 - (scaled_tendance/2)); // blue
+        } else {
+          col = color(0,0,40); // grey  
+        } 
+      
+      stroke(col);
+      fill(col);
       if (!date.event.equals("NONE")) {
-        stroke(0, 100, 80);
-        line(px, py - 2 * date.count, px, py);
+        line(px, py - map(date.count, 0, max_count, 0, 250), px, py);
         ellipse(px, py, 5, 5);
       }
       noStroke();
-      fill(0, date.event.equals("NONE") ? 0 : 100, date.event.equals("NONE") ? 0 : 80);
-      ellipse(px, py - 2 * date.count, date.event.equals("NONE") ? 5 : 10, date.event.equals("NONE") ? 5 : 10);
-      textSize(map(date.count, 0, max_count, 8, 32));
-      fill(0, 100, date.count * 80 / max_count);
-      text(str(date.count), px - (textWidth(str(date.count))/2),  py - 2 * date.count - 12);
+      ellipse(px, py - map(date.count, 0, max_count, 0, 250), !date.event.equals("NONE") ? 10 : 5, !date.event.equals("NONE") ? 10 : 5);
+      textSize(map(date.count, 0, max_count, 8, 24));
+      fill(col);
+      text(str(date.count), px - (textWidth(str(date.count))/2),  py - map(date.count, 0, max_count, 0, 250) - 12);
       pushMatrix();
       translate(px, py);
       rotate(PI/4);
@@ -108,6 +176,7 @@ class Date_gen {
 class Date {
   String label;
   int count = 0;
+  float tendance = 0.;
   String event;
   Date(String label, int count) {
     this.label = label;

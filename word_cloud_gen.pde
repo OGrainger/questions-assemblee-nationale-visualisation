@@ -35,11 +35,11 @@ class Word_cloud_gen {
     
     float scaled_tendance = mot.tendance * 30 / max_tendance;
     
-    if (scaled_tendance < -1) {
+    if (scaled_tendance < -0.1) {
       word.setColor(color(330 - scaled_tendance, 80, 100 + (scaled_tendance/2))); // pink
     }
-    else if (scaled_tendance > 1) {
-      word.setColor(color(240,80,100 - (scaled_tendance/2))); // blue
+    else if (scaled_tendance > 0.1) {
+      word.setColor(color(210 + scaled_tendance,80,100 - (scaled_tendance/2))); // blue
     } else {
       word.setColor(color(0,0,40)); // grey
     }

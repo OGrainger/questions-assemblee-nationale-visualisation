@@ -9,7 +9,7 @@ class Csv_parser {
     return data;
   }
   void loadData() {
-    String[] csv_lines = loadStrings("CSV.txt");
+    String[] csv_lines = loadStrings("CSV_test.txt");
     for (int i = 0; i < csv_lines.length; i++) {
       line_parser(csv_lines[i]);
       println("parsing : " + str(Math.round(float(i)*100/csv_lines.length)) + "%" + " - size : " + data.size());
