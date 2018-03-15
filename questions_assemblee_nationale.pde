@@ -6,7 +6,7 @@ void setup() {
   background(255);
   
   println("STARTED");
-  textFont(createFont("BebasNeueRegular", 32), 32);
+  textFont(createFont("BNR.ttf", 32), 32);
   
   println("LOADING FONT : OK");
 
@@ -20,7 +20,7 @@ void setup() {
   
   new WordCram(this)
     .fromWords(new Word_cloud_gen().generate(data))
-    .withFont(createFont("BebasNeueBook", 32))
+    .withFont(createFont("BNB.ttf", 32))
     .withPlacer(placer)
     .withNudger(placer)
     .sizedByWeight(8, 120) 
